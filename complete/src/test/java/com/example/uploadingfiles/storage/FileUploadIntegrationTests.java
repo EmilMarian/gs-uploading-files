@@ -1,4 +1,4 @@
-package com.example.uploadingfiles;
+package com.example.uploadingfiles.storage;
 
 import org.junit.jupiter.api.Test;
 
@@ -20,7 +20,7 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Matchers.any;
 
-import com.example.uploadingfiles.storage.StorageService;
+import com.example.uploadingfiles.service.StorageService;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class FileUploadIntegrationTests {
@@ -40,12 +40,12 @@ public class FileUploadIntegrationTests {
 
 		MultiValueMap<String, Object> map = new LinkedMultiValueMap<String, Object>();
 		map.add("file", resource);
-		ResponseEntity<String> response = this.restTemplate.postForEntity("/", map,
+		ResponseEntity<String> response = this.restTemplate.postForEntity("/mule/upload/", map,
 				String.class);
 
 		assertThat(response.getStatusCode()).isEqualByComparingTo(HttpStatus.FOUND);
 		assertThat(response.getHeaders().getLocation().toString())
-				.startsWith("http://localhost:" + this.port + "/");
+				.startsWith("http://localhost:" + this.port + "/mule/upload/");
 		then(storageService).should().store(any(MultipartFile.class));
 	}
 
@@ -55,7 +55,7 @@ public class FileUploadIntegrationTests {
 		given(this.storageService.loadAsResource("testupload.txt")).willReturn(resource);
 
 		ResponseEntity<String> response = this.restTemplate
-				.getForEntity("/files/{filename}", String.class, "testupload.txt");
+				.getForEntity("/mule/upload/files/{filename}", String.class, "testupload.txt");
 
 		assertThat(response.getStatusCodeValue()).isEqualTo(200);
 		assertThat(response.getHeaders().getFirst(HttpHeaders.CONTENT_DISPOSITION))

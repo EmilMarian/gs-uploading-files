@@ -1,4 +1,4 @@
-package com.example.uploadingfiles;
+package com.example.uploadingfiles.controller;
 
 import java.io.IOException;
 import java.util.stream.Collectors;
@@ -19,8 +19,8 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.example.uploadingfiles.storage.StorageFileNotFoundException;
-import com.example.uploadingfiles.storage.StorageService;
+import com.example.uploadingfiles.exceptions.StorageFileNotFoundException;
+import com.example.uploadingfiles.service.StorageService;
 
 @Controller
 public class FileUploadController {
@@ -32,7 +32,7 @@ public class FileUploadController {
 		this.storageService = storageService;
 	}
 
-	@GetMapping("/")
+	@GetMapping("/mule/upload")
 	public String listUploadedFiles(Model model) throws IOException {
 
 		model.addAttribute("files", storageService.loadAll().map(
@@ -43,7 +43,7 @@ public class FileUploadController {
 		return "uploadForm";
 	}
 
-	@GetMapping("/files/{filename:.+}")
+	@GetMapping("/mule/upload/files/{filename:.+}")
 	@ResponseBody
 	public ResponseEntity<Resource> serveFile(@PathVariable String filename) {
 
@@ -52,7 +52,7 @@ public class FileUploadController {
 				"attachment; filename=\"" + file.getFilename() + "\"").body(file);
 	}
 
-	@PostMapping("/")
+	@PostMapping("/mule/upload/")
 	public String handleFileUpload(@RequestParam("file") MultipartFile file,
 			RedirectAttributes redirectAttributes) {
 
@@ -60,7 +60,7 @@ public class FileUploadController {
 		redirectAttributes.addFlashAttribute("message",
 				"You successfully uploaded " + file.getOriginalFilename() + "!");
 
-		return "redirect:/";
+		return "redirect:/mule/upload/";
 	}
 
 	@ExceptionHandler(StorageFileNotFoundException.class)

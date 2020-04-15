@@ -1,4 +1,4 @@
-package com.example.uploadingfiles;
+package com.example.uploadingfiles.storage;
 
 import java.nio.file.Paths;
 import java.util.stream.Stream;
@@ -22,8 +22,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.example.uploadingfiles.storage.StorageFileNotFoundException;
-import com.example.uploadingfiles.storage.StorageService;
+import com.example.uploadingfiles.exceptions.StorageFileNotFoundException;
+import com.example.uploadingfiles.service.StorageService;
 
 @AutoConfigureMockMvc
 @SpringBootTest
@@ -40,19 +40,19 @@ public class FileUploadTests {
 		given(this.storageService.loadAll())
 				.willReturn(Stream.of(Paths.get("first.txt"), Paths.get("second.txt")));
 
-		this.mvc.perform(get("/")).andExpect(status().isOk())
+		this.mvc.perform(get("/mule/upload/")).andExpect(status().isOk())
 				.andExpect(model().attribute("files",
-						Matchers.contains("http://localhost/files/first.txt",
-								"http://localhost/files/second.txt")));
+						Matchers.contains("http://localhost/mule/upload/files/first.txt",
+								"http://localhost/mule/upload/files/second.txt")));
 	}
 
 	@Test
 	public void shouldSaveUploadedFile() throws Exception {
 		MockMultipartFile multipartFile = new MockMultipartFile("file", "test.txt",
 				"text/plain", "Spring Framework".getBytes());
-		this.mvc.perform(multipart("/").file(multipartFile))
+		this.mvc.perform(multipart("/mule/upload/").file(multipartFile))
 				.andExpect(status().isFound())
-				.andExpect(header().string("Location", "/"));
+				.andExpect(header().string("Location", "/mule/upload/"));
 
 		then(this.storageService).should().store(multipartFile);
 	}
@@ -63,7 +63,7 @@ public class FileUploadTests {
 		given(this.storageService.loadAsResource("test.txt"))
 				.willThrow(StorageFileNotFoundException.class);
 
-		this.mvc.perform(get("/files/test.txt")).andExpect(status().isNotFound());
+		this.mvc.perform(get("/mule/upload/files/test.txt")).andExpect(status().isNotFound());
 	}
 
 }

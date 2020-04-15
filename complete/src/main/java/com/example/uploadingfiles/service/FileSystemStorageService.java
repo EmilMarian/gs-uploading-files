@@ -1,4 +1,4 @@
-package com.example.uploadingfiles.storage;
+package com.example.uploadingfiles.service;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -9,6 +9,9 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.stream.Stream;
 
+import com.example.uploadingfiles.exceptions.StorageException;
+import com.example.uploadingfiles.exceptions.StorageFileNotFoundException;
+import com.example.uploadingfiles.config.StorageProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;

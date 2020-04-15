@@ -17,6 +17,9 @@ package com.example.uploadingfiles.storage;
 
 import java.util.Random;
 
+import com.example.uploadingfiles.config.StorageProperties;
+import com.example.uploadingfiles.exceptions.StorageException;
+import com.example.uploadingfiles.service.FileSystemStorageService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertThrows;
