@@ -43,7 +43,7 @@ public class FileUploadController {
 		return "uploadForm";
 	}
 
-	@GetMapping("/mule/upload/files/{filename:.+}")
+	@GetMapping("/files/{filename:.+}")
 	@ResponseBody
 	public ResponseEntity<Resource> serveFile(@PathVariable String filename) {
 
@@ -52,7 +52,7 @@ public class FileUploadController {
 				"attachment; filename=\"" + file.getFilename() + "\"").body(file);
 	}
 
-	@PostMapping("/mule/upload/")
+	@PostMapping("/")
 	public String handleFileUpload(@RequestParam("file") MultipartFile file,
 			RedirectAttributes redirectAttributes) {
 
